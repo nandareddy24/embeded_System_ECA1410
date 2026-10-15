@@ -1,0 +1,68 @@
+;A.NANDA REDDY
+;192365034
+;embeded systems - ECA1410
+const int buttonPin = 11;
+
+const int segPins[7] = {7, 6, 5, 4, 3, 2, 1};
+
+const byte numbers[10] = {
+  0b00111111,  // 0
+  0b00000110,  // 1
+  0b01011011,  // 2
+  0b01001111,  // 3
+  0b01100110,  // 4
+  0b01101101,  // 5
+  0b01111101,  // 6
+  0b00000111,  // 7
+  0b01111111,  // 8
+  0b01101111   // 9
+};
+
+int count = 0;
+
+void setup()
+{
+  // External 10k pull-up is being used
+  pinMode(buttonPin, INPUT);
+
+  for (int i = 0; i < 7; i++)
+  {
+    pinMode(segPins[i], OUTPUT);
+  }
+
+  displayNumber(count);
+}
+
+void loop()
+{
+  if (digitalRead(buttonPin) == LOW)
+  {
+    delay(50);
+
+    if (digitalRead(buttonPin) == LOW)
+    {
+      count++;
+
+      if (count > 9)
+      {
+        count = 0;
+      }
+
+      displayNumber(count);
+
+      // Wait for button release
+      while (digitalRead(buttonPin) == LOW)
+      {
+        delay(10);
+      }
+    }
+  }
+}
+
+void displayNumber(int num)
+{
+  for (int i = 0; i < 7; i++)
+  {
+    digitalWrite(segPins[i], bitRead(numbers[num], i));
+  }
+}
