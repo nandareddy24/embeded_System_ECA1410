@@ -1,0 +1,40 @@
+// Pin assignments based on the schematic
+const int gasSensorPin = A0;
+const int ledPin = 13;
+
+// Threshold for gas detection (0-1023)
+const int threshold = 500; 
+
+void setup() {
+  pinMode(ledPin, OUTPUT);
+  // A0 is an input by default, but good practice to declare it
+  pinMode(gasSensorPin, INPUT); 
+  
+  Serial.begin(9600);
+  
+  // Print a CSV header for easy data logging
+  Serial.println("Time(ms),Raw_Data,Filtered_Status");
+}
+
+void loop() {
+  // Read the analog voltage from the sensor
+  int sensorValue = analogRead(gasSensorPin);
+  
+  // Print timestamp and raw data
+  Serial.print(millis());
+  Serial.print(",");
+  Serial.print(sensorValue);
+  Serial.print(",");
+  
+  // Check if gas level exceeds the threshold
+  if (sensorValue > threshold) {
+    digitalWrite(ledPin, HIGH); 
+    Serial.println("1"); // Output '1' to represent the triggered state
+  } else {
+    digitalWrite(ledPin, LOW);
+    Serial.println("0"); // Output '0' for normal state
+  }
+  
+  // Brief delay to stabilize readings
+  delay(500);
+}
